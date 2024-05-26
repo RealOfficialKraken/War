@@ -1,0 +1,333 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: war-custom-code.gc
+;; name in dgo: war-custom-code
+;; dgos: ENGINE, GAME
+
+;traffic-metalheads controls traffic to default value: 
+
+
+;set traffic to guards only
+
+
+;set traffic to metalheads only
+;(send-event *traffic-manager* 'set-guard-target-level 100)
+
+;set traffic to both guards and metalheads
+;
+
+;spawn rift ring
+;(process-spawn rift-ring-ingame (target-pos 0))
+
+
+
+
+;ported to retail
+(defun dm-play-task-with-continue ((arg0 game-task) (arg1 string))
+  (let* ((t9-0 play-task)
+         (a1-1 'debug)
+         (a2-0 (cond
+                 ((cpad-hold? 0 l1)
+                  'pre-play
+                  )
+                 ((cpad-hold? 0 r1)
+                  'kiosk
+                  )
+                 )
+               )
+         (a1-2 (t9-0 arg0 a1-1 a2-0))
+         )
+    (if arg1
+        (set! a1-2 arg1)
+        )
+    (start 'play (get-continue-by-name *game-info* a1-2))
+    )
+  (set-master-mode 'game)
+  0
+  (none)
+  )
+
+;sets world to dark eco world
+(defun dark-mode ()
+(set! (-> *mood-control* overide-weather-flag) #t)
+  (set! (-> *mood-control* overide fog) 1.0)
+  (set! (-> *mood-control* overide cloud) 1.0)
+  (set! (-> (level-get-target-inside *level*) mood-func)update-mood-nest)
+(none)
+)
+
+
+
+(defun get-nav-control ((arg0 process-drawable) (arg1 nav-mesh))
+  (if (not arg1)
+      (set! arg1 (nav-mesh-from-res-tag (-> arg0 entity) 'nav-mesh-actor 0))
+      )
+  (if arg1
+    (add-process-drawable-to-navmesh arg1 arg0 #t)
+    (add-process-drawable-to-navmesh *default-nav-mesh* arg0 #t)
+    )
+  (none)
+  )
+
+(define in-game? #f)
+(define cdr 0)
+(define-extern spawnslot int)
+(define-extern spawncap int)
+(define *rift-tracker* (the (pointer rift-ring-ingame) #f))
+(define *torn-tracker* (the (pointer torn-npc) #f))
+(define *vin-tracker* (the (pointer vin-npc) #f))
+(define *turbine-tracker* (the (pointer vin-turbine) #f))
+(define target-in? #f)
+
+(defun-extern spawn-process-group-rhino (none))
+
+
+(defun-extern war-ctyport symbol)
+
+
+(defun war-every-frame () ;self explanitory
+
+(when ;define target-in? #t
+(and
+*target*
+(not *scene-player*)
+(= (pause-allowed?) #t)
+(= (paused?) #f)
+(= target-in? #f)
+)
+  (set! target-in? #t)
+)
+
+(when  ;define target-in? #f
+(and
+(or 
+(not *target*)
+*scene-player*
+(= (pause-allowed?) #f)
+(= (paused?) #t)
+)
+(= target-in? #t)
+)
+  (set! target-in? #f)
+)
+
+;updates level to dark-mode
+(when 
+(and 
+(= (pause-allowed?) #t)
+*target*
+(not *scene-player*)
+(= traffic-metalheads #t)
+(!= (-> (level-get-target-inside *level*) mood-func) update-mood-nest)
+)
+(dark-mode)
+)
+
+
+
+(when ;spawn rift ring in port
+(and
+*target*
+(not *scene-player*)
+(= (pause-allowed?) #t)
+(= target-in? #t)
+(not (ppointer->process *rift-tracker*))
+(or 
+(= (-> (level-get-target-inside *level*) name) 'ctyport)
+(= (-> (level-get-target-inside *level*) name) 'ctypal)
+)
+)
+  (let 
+    ((v1-0 (new 'static 'vector :x (meters 183.9417) :y (meters 48.5856) :z (meters 1546.0906))))
+      (process-spawn rift-ring-ingame v1-0)
+      (set! *rift-tracker* (process-spawn rift-ring-ingame v1-0))
+        (format #t "
+spawned process rift-ring-ingame
+")
+    )
+)
+
+(when ;despawn rift ring in port
+(and
+(ppointer->process *rift-tracker*)
+  (and 
+    (!= (-> (level-get-target-inside *level*) name) 'ctyport)
+    (!= (-> (level-get-target-inside *level*) name) 'ctypal)
+  )
+)
+  (kill-by-name "rift-ring-ingame" *default-pool*)
+  (set! *rift-tracker* #f)
+  (format #t "
+killed rift-ring-ingame
+")
+)
+
+
+
+(when ;spawn vin-npc in atoll
+(and
+*target*
+(not *scene-player*)
+(= (pause-allowed?) #t)
+(not (ppointer->process *vin-tracker*))
+(= (-> (level-get-target-inside *level*) name) 'atoll)
+)
+  (let 
+    ((v1-0 (new 'static 'vector :x (meters 570.5107) :y (meters 0.70) :z (meters -851.8250))))
+      (process-spawn vin-npc v1-0)
+      (set! *vin-tracker* (process-spawn vin-npc v1-0))
+        (format #t "
+spawned process vin-npc
+")
+    )
+)
+
+(when ;despawn vin-npc in port
+(and
+(ppointer->process *vin-tracker*)
+  (and 
+    (!= (-> (level-get-target-inside *level*) name) 'atollext)
+    (!= (-> (level-get-target-inside *level*) name) 'atoll)
+  )
+)
+  (kill-by-name "vin-npc" *default-pool*)
+  (set! *vin-tracker* #f)
+  (format #t "
+killed vin-npc
+")
+)
+
+
+(when ;spawn torn-npc in atoll
+(and
+*target*
+(not *scene-player*)
+(= (pause-allowed?) #t)
+(= target-in? #t)
+(not (ppointer->process *torn-tracker*))
+(or 
+(= (-> (level-get-target-inside *level*) name) 'atoll)
+)
+)
+  (let 
+    ((v1-0 (new 'static 'vector :x (meters 577.5107) :y (meters 1.0) :z (meters -851.8250))))
+      (process-spawn torn-npc v1-0)
+      (set! *torn-tracker* (process-spawn torn-npc v1-0))
+        (format #t "
+spawned process torn-npc
+")
+    )
+)
+
+(when ;despawn torn-npc in port
+(and
+(ppointer->process *torn-tracker*)
+  (and 
+    (!= (-> (level-get-target-inside *level*) name) 'atoll)
+    (!= (-> (level-get-target-inside *level*) name) 'atollext)
+  )
+)
+  (kill-by-name "torn-npc" *default-pool*)
+  (set! *torn-tracker* #f)
+  (format #t "
+killed torn-npc
+")
+)
+
+(when ;spawn vin-turbine in atoll
+(and
+*target*
+(not *scene-player*)
+(= (pause-allowed?) #t)
+(= target-in? #t)
+(not (ppointer->process *turbine-tracker*))
+(or 
+(= (-> (level-get-target-inside *level*) name) 'atoll)
+)
+)
+  (let 
+    ((v1-0 (new 'static 'vector :x (meters 561.9455) :y (meters 10.0) :z (meters -861.3982))))
+      (process-spawn vin-turbine v1-0)
+      (set! *turbine-tracker* (process-spawn vin-turbine v1-0))
+        (format #t "
+spawned process vin-turbine
+")
+    )
+)
+
+(when ;despawn torn-npc in port
+(and
+(ppointer->process *turbine-tracker*)
+  (and 
+    (!= (-> (level-get-target-inside *level*) name) 'atoll)
+    (!= (-> (level-get-target-inside *level*) name) 'atollext)
+  )
+)
+  (kill-by-name "vin-turbine" *default-pool*)
+  (set! *turbine-tracker* #f)
+  (format #t "
+killed vin-turbine
+")
+)
+
+(when ;CDR for in-game? spawn
+(and 
+(= in-game? #t) 
+(>= cdr 1)
+(= in-game? #t)
+(= target-in? #t)
+)
+    (-! cdr 1)
+)
+
+(when ;checks for in-game? then spawns enemies around jak
+(and 
+(= in-game? #t)
+(= cdr 0)
+(= target-in? #t)
+(<= spawnslot spawncap)
+)
+    (when (rand-vu-percent? 0.03)
+        (spawn-process-mantis)
+        (set! cdr 20)
+    )
+)
+
+#|(when 
+(and 
+*target*
+(not *scene-player*)
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(task-node-closed? (game-task-node atoll-sig-introduction))
+(task-node-closed? (game-task-node drill-eggs-introduction))
+(not (task-node-closed? (game-task-node atoll-battle-introduction)))
+)
+  (task-node-close! (game-task-node atoll-battle-introduction))
+)|#
+
+;(task-node-close! (game-task-node mountain-collection-resolution))
+;(task-node-close! (game-task-node city-krew-collection-resolution))
+;(task-node-close! (game-task-node stadium-board1-resolution))
+
+(when (= in-dialogue? #t)
+(format #t "Talked to NPC")
+(set! in-dialogue? #f)
+)
+
+
+
+(none) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;END RUNS EVERY FRAME
+)
+
+(defun runs-on-target-death-0hp ()
+    (format #t "(runs-on-target-death-0hp)")
+    (none)
+)
+
+(defun runs-on-target-death-blackout ()
+    (format #t "(runs-on-target-death-blackout)")
+    (kill-all-process-entity)
+    (none)
+)

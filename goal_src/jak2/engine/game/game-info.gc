@@ -297,9 +297,9 @@
   (local-vars (v0-3 int) (sv-96 game-task-node-info) (sv-112 symbol))
   (case arg0
     (('dead 'life)
-     (+! (-> this total-deaths) 1)
-     (+! (-> this continue-deaths) 1)
-     (+! (-> this task-deaths) 1)
+     (+! (-> this total-deaths) 0)
+     (+! (-> this continue-deaths) 0)
+     (+! (-> this task-deaths) 0)
      (when *target*
        (let ((s4-1 (-> *target* current-level info)))
          (set! (-> this deaths-per-level (-> s4-1 task-level))
@@ -370,7 +370,7 @@
           "demo-start"
           )
          (*debug-segment*
-           "game-start"
+           "atoll-start"
            )
          (else
            "title-start"
@@ -415,10 +415,10 @@
      (set! (-> this wanted-flash) #f)
      (set! (-> this distance) 0.0)
      (set! (-> this attack-id) (the-as uint 2))
-     (set! (-> this total-trys) 0)
-     (set! (-> this total-deaths) 0)
-     (set! (-> this continue-deaths) 0)
-     (set! (-> this task-deaths) 0)
+     ;(set! (-> this total-trys) 0)
+     ;(set! (-> this total-deaths) 0)
+     ;(set! (-> this continue-deaths) 0)
+     ;(set! (-> this task-deaths) 0)
      (set! (-> this death-pos length) 0)
      (set! (-> this game-start-time) (-> *display* game-clock frame-counter))
      (set! (-> this task-pickup-time) (-> *display* game-clock frame-counter))
@@ -532,7 +532,7 @@
                                       (set! (-> self mask) (process-mask))
                                       (stop arg0)
                                       (reset-actors arg1)
-                                      (close! (-> *game-info* sub-task-list (game-task-node fortress-escape-start)) 'event)
+                                      (close! (-> *game-info* sub-task-list (game-task-node drill-eggs-introduction)) 'event)
                                       (set-continue! *game-info* arg2 #f)
                                       (when arg3
                                         (load-game *game-info* arg3)

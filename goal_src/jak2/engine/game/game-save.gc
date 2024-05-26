@@ -1183,7 +1183,7 @@
        (logior! (-> *game-info* purchase-secrets) (game-secrets hero-mode))
        )
       )
-    (set-continue! this "game-start" #f)
+    (set-continue! this "atoll-start" #f)
     (set! arg0 arg0)
     (goto cfg-230)
     )

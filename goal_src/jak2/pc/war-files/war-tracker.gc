@@ -1,0 +1,294 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: war-tracker.gc
+;; name in dgo: war-tracker
+;; dgos: ENGINE, GAME
+
+(define-extern traffic-metalheads symbol)
+
+(defun war-tracker! ()
+
+    (when (= (-> *game-info* continue-deaths) 0) ;sets to 1billion on default value
+  (set! (-> *game-info* continue-deaths) 1000000000)
+)
+(when (= (-> *game-info* task-deaths) 0) ;sets to 10million on default value
+  (set! (-> *game-info* task-deaths) 10000000)
+)
+
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyslumc)
+(= (/ (mod (-> *game-info* continue-deaths) 10) 1) 0) ; 0, war ctyslumc
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyslumc)
+(= (/ (mod (-> *game-info* continue-deaths) 10) 1) 1) ; 1, no war ctyslumc
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyslumb)
+(= (/ (mod (-> *game-info* continue-deaths) 100) 10) 0) ; 0, war ctyslumb
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyslumb)
+(= (/ (mod (-> *game-info* continue-deaths) 100) 10) 1) ; 1, no war ctyslumb
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctysluma)
+(= (/ (mod (-> *game-info* continue-deaths) 1000) 100) 0) ; 0, war ctysluma
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctysluma)
+(= (/ (mod (-> *game-info* continue-deaths) 1000) 100) 1) ; 1, no war ctysluma
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyindb)
+(= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 0) ; 0, war ctyindb
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyindb)
+(= (/ (mod (-> *game-info* continue-deaths) 10000) 1000) 1) ; 1, no war ctyindb
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyinda)
+(= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 0) ; 0, war ctyinda
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyinda)
+(= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 1) ; 1, no war ctyinda
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyport)
+(= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 0) ; 0, war ctyport
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyport)
+(= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 1) ; 1, no war ctyport
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyfarmb)
+(= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 0) ; 0, war ctyfarmb
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyfarmb)
+(= (/ (mod (-> *game-info* continue-deaths) 10000000) 1000000) 1) ; 1, no war ctyfarmb
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctymarka)
+(= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 0) ; 0, war ctymarka
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctymarka)
+(= (/ (mod (-> *game-info* continue-deaths) 100000000) 10000000) 1) ; 1, no war ctymarka
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyfarma)
+(= (/ (mod (-> *game-info* continue-deaths) 1000000000) 100000000) 0) ; 0, war ctyfarma
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctyfarma)
+(= (/ (mod (-> *game-info* continue-deaths) 1000000000) 100000000) 1) ; 1, no war ctyfarma
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctypal)
+(= (/ (mod (-> *game-info* task-deaths) 10) 1) 0) ; 0, war ctypal
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctypal)
+(= (/ (mod (-> *game-info* task-deaths) 10) 1) 1) ; 1, no war ctypal
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctygenc)
+(= (/ (mod (-> *game-info* task-deaths) 100) 10) 0) ; 0, war ctygenc
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctygenc)
+(= (/ (mod (-> *game-info* task-deaths) 100) 10) 1) ; 1, no war ctygenc
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctygenb)
+(= (/ (mod (-> *game-info* task-deaths) 1000) 100) 0) ; 0, war ctygenb
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctygenb)
+(= (/ (mod (-> *game-info* task-deaths) 1000) 100) 1) ; 1, no war ctygenb
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctygena)
+(= (/ (mod (-> *game-info* task-deaths) 10000) 1000) 0) ; 0, war ctygena
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'ctygena)
+(= (/ (mod (-> *game-info* task-deaths) 10000) 1000) 1) ; 1, no war ctygena
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'stadium)
+(= (/ (mod (-> *game-info* task-deaths) 100000) 10000) 0) ; 0, war stadium
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'stadium)
+(= (/ (mod (-> *game-info* task-deaths) 100000) 10000) 1) ; 1, no war stadium
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'markb)
+(= (/ (mod (-> *game-info* task-deaths) 1000000) 100000) 0) ; 0, war markb
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'markb)
+(= (/ (mod (-> *game-info* task-deaths) 1000000) 100000) 1) ; 1, no war markb
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+(when ;sets area to war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'onintent)
+(= (/ (mod (-> *game-info* task-deaths) 10000000) 1000000) 0) ; 0, war onintent
+(= traffic-metalheads #f)
+)
+  (set! traffic-metalheads #t)
+)
+(when ;sets area to no war on enter
+(and 
+(= (-> (level-get-target-inside *level*) name) 'onintent)
+(= (/ (mod (-> *game-info* task-deaths) 10000000) 1000000) 1) ; 1, no war onintent
+(= traffic-metalheads #t)
+)
+  (set! traffic-metalheads #f)
+)
+
+    (when *debug-segment*
+      (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_GREEN>continue-deaths (war-tracker!) = <COLOR_ORANGE>~d~%<COLOR_GREEN>task-deaths (war-tracker!) = <COLOR_ORANGE>~d"
+      (-> *game-info* continue-deaths)
+      (-> *game-info* task-deaths)
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        ;; reset bucket settings prior to drawing - font won't do self for us, and
+        ;; draw-raw-image can sometimes mess them up. (intro sequence)
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 1 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+    )
+    (none)
+)

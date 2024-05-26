@@ -1,0 +1,585 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: actordef-h.gc
+
+
+
+
+(deftype vin-npc (process-taskable)
+  ()
+  )
+
+  (defskelgroup skel-vin vin vin-lod0-jg vin-idle-ja
+              ((vin-lod0-mg (meters 999999)))
+              :bounds (static-spherem 0 0 0 10)
+              :shadow vin-shadow-mg
+              :origin-joint-index 3
+              )
+
+;; WARN: Return type mismatch draw-control vs none.
+(defmethod init-art! ((this vin-npc))
+  "@see [[initialize-skeleton]]"
+  (initialize-skeleton
+    this
+    (the-as skeleton-group (art-group-get-by-name *level* "skel-vin" (the-as (pointer uint32) #f)))
+    (the-as pair 0)
+    )
+  (none)
+  )
+
+  (defbehavior vin-npc-init-by-other vin-npc ((vec vector))
+  (stack-size-set! (-> self main-thread) 512)
+  (process-taskable-method-31 self)
+  (logior! (-> self mask) (process-mask actor-pause))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (set! (-> self task) (new 'process 'game-task-control (game-task-actor vin-vinroom)))
+  (init-art! self)
+  (process-taskable-method-32 self)
+  (set! (-> self event-hook) (-> (method-of-object self idle) event))
+  (go (method-of-object self hide))
+  (none)
+  )
+
+  (defskelgroup skel-rift-ring-ingame rift-ring-in-game rift-ring-in-game-lod0-jg rift-ring-in-game-idle-ja
+              ((rift-ring-in-game-lod0-mg (meters 999999)))
+              :bounds (static-spherem 0 0 0 40)
+              )
+
+(deftype rift-ring-ingame (process-drawable)
+  ((anim-speed          delayed-rand-float  :inline)
+   (stutter             symbol)
+   (spin-sound          sound-id)
+   (spin-sound-playing  symbol)
+   )
+  (:state-methods
+    idle
+    )
+  )
+
+
+(defstate idle (rift-ring-ingame)
+  :virtual #t
+  :event (behavior ((proc process) (argc int) (message symbol) (block event-message-block))
+    (case message
+      (('stutter)
+       (set! (-> self stutter) (the-as symbol (-> block param 0)))
+       (set-params! (-> self anim-speed) 3 15 0.25)
+       (reset! (-> self anim-speed))
+       (set! (-> self anim-speed value) -0.25)
+       )
+      )
+    )
+  :trans (behavior ()
+    (cond
+      ((-> self stutter)
+       (update! (-> self anim-speed))
+       (ja :num! (loop! (+ 0.125 (-> self anim-speed value))))
+       )
+      (else
+        (ja :num! (loop!))
+        )
+      )
+    (sound-play "warp-ring" :id (-> self spin-sound) :position (-> self root trans))
+    (set! (-> self spin-sound-playing) #t)
+    )
+  :code sleep-code
+  :post (behavior ()
+    (spawn (-> self part) (-> self root trans))
+    (ja-post)
+    )
+  )
+
+(defmethod deactivate ((this rift-ring-ingame))
+  (if (-> this spin-sound-playing)
+      (sound-stop (-> this spin-sound))
+      )
+  ((method-of-type process-drawable deactivate) this)
+  (none)
+  )
+
+;; WARN: Return type mismatch object vs none.
+(defmethod init-from-entity! ((this rift-ring-ingame) (arg0 entity-actor))
+  "Typically the method that does the initial setup on the process, potentially using the [[entity-actor]] provided as part of that.
+This commonly includes things such as:
+- stack size
+- collision information
+- loading the skeleton group / bones
+- sounds"
+  (set! (-> this root) (new 'process 'trsqv))
+  (process-drawable-from-entity! this arg0)
+  (initialize-skeleton
+    this
+    (the-as skeleton-group (art-group-get-by-name *level* "skel-rift-ring-ingame" (the-as (pointer uint32) #f)))
+    (the-as pair 0)
+    )
+  (set! (-> this part) (create-launch-control (-> *part-group-id-table* 1236) this))
+  (set! (-> this draw light-index) (the-as uint 10))
+  (set! (-> this stutter) #f)
+  (set! (-> this spin-sound) (new-sound-id))
+  (set! (-> this spin-sound-playing) #f)
+  (go (method-of-object this idle))
+  (none)
+  )
+
+  (defbehavior rift-ring-ingame-init-by-other rift-ring-ingame ((vec vector))
+  (set! (-> self root) (new 'process 'trsqv))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+    (initialize-skeleton
+    self
+    (the-as skeleton-group (art-group-get-by-name *level* "skel-rift-ring-ingame" (the-as (pointer uint32) #f)))
+    (the-as pair 0)
+    )
+  (set! (-> self part) (create-launch-control (-> *part-group-id-table* 1236) self))
+  (set! (-> self draw light-index) (the-as uint 10))
+  (set! (-> self stutter) #f)
+  (set! (-> self spin-sound) (new-sound-id))
+  (set! (-> self spin-sound-playing) #f)
+  (set! (-> self event-hook) (-> (method-of-object self idle) event))
+  (go (method-of-object self idle))
+  (set! (-> self root scale x) 10.0)
+  (set! (-> self root scale y) 10.0)
+  (set! (-> self root scale z) 10.0)
+  (none)
+  )
+
+  
+(deftype torn-npc (process-taskable)
+  ()
+  )
+
+
+(defmethod init-art! ((this torn-npc))
+  "@see [[initialize-skeleton]]"
+  (initialize-skeleton
+    this
+    (the-as skeleton-group (art-group-get-by-name *level* "skel-torn-highres" (the-as (pointer uint32) #f)))
+    (the-as pair 0)
+    )
+  (set! (-> this draw light-index) (the-as uint 30))
+  0
+  (none)
+  )
+
+(defmethod get-art-elem ((this torn-npc))
+  "Checks various things such the current actor, task status, etc to determine the right art-group data to use
+@returns the appropriate [[art-element]] for the given NPC"
+  (cond
+    ((task-node-open? (game-task-node ruins-tower-introduction))
+     (-> this draw art-group data 5)
+     )
+    ((task-node-open? (game-task-node ruins-tower-resolution))
+     (-> this draw art-group data 5)
+     )
+    (else
+      (-> this draw art-group data 4)
+      )
+    )
+  )
+
+(defmethod get-trans ((this torn-npc) (arg0 int))
+  "@returns the `trans` [[vector]] from the process's `root` (typically either a [[trsqv]] or a [[collide-shape]])"
+  (let ((v1-0 (-> this root)))
+    (if (= arg0 2)
+        (vector<-cspace! (new 'static 'vector) (-> this node-list data 6))
+        (-> v1-0 trans)
+        )
+    )
+  )
+
+  (defbehavior torn-npc-init-by-other torn-npc ((vec vector))
+  (stack-size-set! (-> self main-thread) 512)
+  (process-taskable-method-31 self)
+  (logior! (-> self mask) (process-mask actor-pause))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (set! (-> self task) (new 'process 'game-task-control (game-task-actor torn-hideout)))
+  (init-art! self)
+  (process-taskable-method-32 self)
+  (set! (-> self event-hook) (-> (method-of-object self idle) event))
+  (go (method-of-object self hide))
+  (none)
+  )
+
+(defbehavior rhino-init-by-other rhino ((vec vector))
+  (init-enemy-collision! self)
+  (logior! (-> self mask) (process-mask actor-pause))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (init-enemy! self)
+  (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
+        ;; verts for the path
+        (cverts (new 'static 'inline-array vector 3
+                (static-vectorm 1 0 0)
+                (static-vectorm 0 1 0)
+                (static-vectorm 0 0 1)
+                )
+          )
+        )
+    ;; if a nav mesh is close by, use that, otherwise use default
+    (if nav
+      (change-to nav self)
+      (change-to *default-nav-mesh* self)
+      )
+    ;; allocate path
+    (set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
+    (set! (-> self path curve cverts) cverts)
+    (set! (-> self path curve num-cverts) 3)
+    )
+  (go-idle self)
+  )
+
+  (defbehavior grunt-init-by-other grunt ((vec vector))
+  (init-enemy-collision! self)
+  (logior! (-> self mask) (process-mask actor-pause))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (init-enemy! self)
+  (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
+        ;; verts for the path
+        (cverts (new 'static 'inline-array vector 3
+                (static-vectorm 1 0 0)
+                (static-vectorm 0 1 0)
+                (static-vectorm 0 0 1)
+                )
+          )
+        )
+    ;; if a nav mesh is close by, use that, otherwise use default
+    (if nav
+      (change-to nav self)
+      (change-to *default-nav-mesh* self)
+      )
+    ;; allocate path
+    (set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
+    (set! (-> self path curve cverts) cverts)
+    (set! (-> self path curve num-cverts) 3)
+    )
+  (go-idle self)
+  )
+
+  (defbehavior flitter-init-by-other flitter ((vec vector))
+  (init-enemy-collision! self)
+  (logior! (-> self mask) (process-mask actor-pause))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (init-enemy! self)
+  (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
+        ;; verts for the path
+        (cverts (new 'static 'inline-array vector 3
+                (static-vectorm 1 0 0)
+                (static-vectorm 0 1 0)
+                (static-vectorm 0 0 1)
+                )
+          )
+        )
+    ;; if a nav mesh is close by, use that, otherwise use default
+    (if nav
+      (change-to nav self)
+      (change-to *default-nav-mesh* self)
+      )
+    ;; allocate path
+    (set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
+    (set! (-> self path curve cverts) cverts)
+    (set! (-> self path curve num-cverts) 3)
+    )
+  (go-idle self)
+  )
+
+  (defbehavior predator-init-by-other predator ((vec vector))
+  (init-enemy-collision! self)
+  (logior! (-> self mask) (process-mask actor-pause))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (init-enemy! self)
+  (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
+        ;; verts for the path
+        (cverts (new 'static 'inline-array vector 3
+                (static-vectorm 1 0 0)
+                (static-vectorm 0 1 0)
+                (static-vectorm 0 0 1)
+                )
+          )
+        )
+    ;; if a nav mesh is close by, use that, otherwise use default
+    (if nav
+      (change-to nav self)
+      (change-to *default-nav-mesh* self)
+      )
+    ;; allocate path
+    (set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
+    (set! (-> self path curve cverts) cverts)
+    (set! (-> self path curve num-cverts) 3)
+    )
+  (go-idle self)
+  )
+
+  (defbehavior rapid-gunner-init-by-other rapid-gunner ((vec vector))
+  (init-enemy-collision! self)
+  (logior! (-> self mask) (process-mask actor-pause))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (init-enemy! self)
+  (let ((nav (find-nearest-nav-mesh vec 0.0)) ;; try to find a nav mesh in the vicinity
+        ;; verts for the path
+        (cverts (new 'static 'inline-array vector 3
+                (static-vectorm 1 0 0)
+                (static-vectorm 0 1 0)
+                (static-vectorm 0 0 1)
+                )
+          )
+        )
+    ;; if a nav mesh is close by, use that, otherwise use default
+    (if nav
+      (change-to nav self)
+      (change-to *default-nav-mesh* self)
+      )
+    ;; allocate path
+    (set! (-> self path) (new 'process 'path-control self 'path 0.0 (the entity #f) #f))
+    (set! (-> self path curve cverts) cverts)
+    (set! (-> self path curve num-cverts) 3)
+    )
+  (go-idle self)
+  )
+
+
+
+
+  (deftype vin-turbine (process-drawable)
+  ((dont-draw-outside?  symbol)
+   (lightning-timer     uint64)
+   (outside-plane       plane  :inline)
+   (lightning-plane     plane  :inline)
+   )
+  (:state-methods
+    idle
+    dormant
+    )
+  )
+
+
+(defpart 1245
+  :init-specs ((:texture (new 'static 'texture-id :index #xbb :page #xc))
+    (:num 1.0)
+    (:scale-x (meters 60))
+    (:rot-x (degrees 11.25))
+    (:rot-z (degrees 0) (degrees 360))
+    (:scale-y :copy scale-x)
+    (:r 64.0 64.0)
+    (:g 128.0 64.0)
+    (:b 255.0)
+    (:a 32.0)
+    (:timer (seconds 1))
+    (:flags (sp-cpuinfo-flag-2 sp-cpuinfo-flag-3 glow))
+    (:userdata 1638.4)
+    (:next-time (seconds 0.017))
+    (:next-launcher 167)
+    )
+  )
+
+(defpart 1246
+  :init-specs ((:scale-x (meters 60))
+    (:rot-z (degrees 0) (degrees 360))
+    (:scale-y :copy scale-x)
+    (:r 64.0 64.0)
+    (:g 128.0 64.0)
+    (:b 255.0)
+    (:a 24.0 32.0)
+    (:next-time (seconds 0.017))
+    (:next-launcher 167)
+    )
+  )
+
+(set! (-> *lightning-spec-id-table* 17) (new 'static 'lightning-spec
+                                          :name "lightning-turbine"
+                                          :flags (lightning-spec-flags lsf2)
+                                          :start-color (new 'static 'rgba :r #xff :g #xff :b #xff :a #x80)
+                                          :end-color (new 'static 'rgba :a #x80)
+                                          :fade-to-color (new 'static 'rgba :r #xbf :b #x8f :a #x5)
+                                          :fade-start-factor 0.2
+                                          :fade-time 120.0
+                                          :texture (new 'static 'texture-id :index #x83 :page #xc)
+                                          :reduction 0.42
+                                          :num-points 16
+                                          :box-size 12288.0
+                                          :merge-factor 0.5
+                                          :merge-count 4
+                                          :radius 2048.0
+                                          :duration 300.0
+                                          :sound #f
+                                          )
+      )
+
+(defskelgroup skel-vin-turbine vin-turbine vin-turbine-lod0-jg vin-turbine-idle-ja
+              ((vin-turbine-lod0-mg (meters 999999)))
+              :bounds (static-spherem 0 0 0 6)
+              )
+
+(defstate dormant (vin-turbine)
+  :virtual #t
+  :enter (behavior ()
+    (logior! (-> self draw status) (draw-control-status no-draw))
+    )
+  :exit (behavior ()
+    (logclear! (-> self draw status) (draw-control-status no-draw))
+    )
+  :trans (behavior ()
+    (if (>= (vector4-dot (the-as vector (-> self outside-plane)) (math-camera-pos)) 0.0)
+        (go-virtual idle)
+        )
+    )
+  :code sleep-code
+  )
+
+(defstate idle (vin-turbine)
+  :virtual #t
+  :trans (behavior ()
+    (if (and (-> self dont-draw-outside?)
+             (< (vector4-dot (the-as vector (-> self outside-plane)) (math-camera-pos)) 0.0)
+             )
+        (go-virtual dormant)
+        )
+    )
+  :code (behavior ()
+    (until #f
+      (ja-no-eval :group! (ja-group) :num! (seek!) :frame-num 0.0)
+      (until (ja-done? 0)
+        (suspend)
+        (ja :num! (seek!))
+        )
+      )
+    #f
+    )
+  :post (behavior ()
+    (when (and (or (not (-> self dont-draw-outside?))
+                   (>= (vector4-dot (the-as vector (-> self lightning-plane)) (math-camera-pos)) 0.0)
+                   )
+               (< (the-as time-frame (-> self lightning-timer)) (current-time))
+               )
+      (let ((s4-0 (new 'stack-no-clear 'matrix))
+            (s3-1
+              (vector-rotate-x! (new 'stack-no-clear 'vector) *y-vector* (* 182.04445 (rand-vu-float-range 10.0 40.0)))
+              )
+            (gp-2 (new 'stack-no-clear 'vector))
+            (s5-1 (new 'stack-no-clear 'collide-query))
+            )
+        (if (rand-vu-percent? 0.5)
+            (vector-negate! s3-1 s3-1)
+            )
+        (vector-rotate-y! s3-1 s3-1 (* 182.04445 (rand-vu-float-range 0.0 360.0)))
+        (vector+float*! gp-2 (-> self root trans) s3-1 15564.8)
+        (set! (-> s5-1 start-pos quad) (-> gp-2 quad))
+        (set-vector!
+          (-> s5-1 move-dist)
+          (rand-vu-float-range -4551.1113 4551.1113)
+          0.0
+          (rand-vu-float-range -910.2222 910.2222)
+          1.0
+          )
+        (matrix-rotate-zyx! s4-0 (-> s5-1 move-dist))
+        (let ((s4-1 (vector-rotate*! (new 'stack-no-clear 'vector) s3-1 s4-0)))
+          (vector-normalize! s4-1 6144.0)
+          (vector+! (-> s5-1 start-pos) (-> s5-1 start-pos) s4-1)
+          (vector-normalize-copy! (-> s5-1 move-dist) s4-1 81920.0)
+          )
+        (let ((v1-17 s5-1))
+          (set! (-> v1-17 radius) 409.6)
+          (set! (-> v1-17 collide-with) (collide-spec backgnd))
+          (set! (-> v1-17 ignore-process0) self)
+          (set! (-> v1-17 ignore-process1) #f)
+          (set! (-> v1-17 ignore-pat) (new 'static 'pat-surface :noentity #x1 :nojak #x1 :probe #x1 :noendlessfall #x1))
+          (set! (-> v1-17 action-mask) (collide-action solid))
+          )
+        (when (>= (fill-and-probe-using-line-sphere *collide-cache* s5-1) 0.0)
+          (set! (-> self lightning-timer)
+                (the-as uint (+ (current-time) (the int (* 300.0 (rand-vu-float-range 0.1 0.4)))))
+                )
+          (let ((s4-3 (new 'stack-no-clear 'vector)))
+            (set! (-> s4-3 quad) (-> s5-1 best-other-tri intersect quad))
+            (when (< 8192.0 (vector-vector-distance gp-2 s4-3))
+              (let ((s3-2 (process-spawn
+                            lightning-tracker
+                            :init lightning-tracker-init
+                            (-> *lightning-spec-id-table* 17)
+                            0
+                            #f
+                            self
+                            gp-2
+                            s4-3
+                            :to self
+                            )
+                          )
+                    (v1-36 (get-field-spec-by-id (-> *part-id-table* 1245) (sp-field-id spt-timer)))
+                    )
+                (if v1-36
+                    (set! (-> v1-36 initial-valuef) (the-as float (-> (the-as lightning-tracker (-> s3-2 0)) duration)))
+                    )
+                )
+              (launch-particles (-> *part-id-table* 1245) s4-3)
+              )
+            )
+          )
+        )
+      )
+    (ja-post)
+    )
+  )
+
+;; WARN: Return type mismatch object vs none.
+(defmethod init-from-entity! ((this vin-turbine) (arg0 entity-actor))
+  "Typically the method that does the initial setup on the process, potentially using the [[entity-actor]] provided as part of that.
+This commonly includes things such as:
+- stack size
+- collision information
+- loading the skeleton group / bones
+- sounds"
+  (set! (-> this root) (new 'process 'trsqv))
+  (process-drawable-from-entity! this arg0)
+  (initialize-skeleton
+    this
+    (the-as skeleton-group (art-group-get-by-name *level* "skel-vin-turbine" (the-as (pointer uint32) #f)))
+    (the-as pair 0)
+    )
+  (set-vector! (-> this outside-plane) 0.707 0.0 0.707 -6377922.5)
+  (set! (-> this lightning-plane quad) (-> this outside-plane quad))
+  (set! (-> this lightning-plane w) -6419865.5)
+  (set! (-> this dont-draw-outside?)
+        (nonzero? (res-lump-value (-> this entity) 'extra-id uint128 :time -1000000000.0))
+        )
+  (set! (-> this lightning-timer) (the-as uint 0))
+  (if (and (-> this dont-draw-outside?)
+           (< (vector4-dot (the-as vector (-> this outside-plane)) (math-camera-pos)) 0.0)
+           )
+      (go (method-of-object this dormant))
+      (go (method-of-object this idle))
+      )
+  (none)
+  )
+
+(defbehavior vin-turbine-init-by-other vin-turbine ((vec vector))
+  (set! (-> self root) (new 'process 'trsqv))
+  (vector-copy! (-> self root trans) vec)
+  (quaternion-identity! (-> self root quat))
+  (vector-identity! (-> self root scale))
+  (initialize-skeleton
+    self
+    (the-as skeleton-group (art-group-get-by-name *level* "skel-vin-turbine" (the-as (pointer uint32) #f)))
+    (the-as pair 0)
+    )
+  (set! (-> self lightning-plane quad) (-> self outside-plane quad))
+  (set! (-> self lightning-plane w) -6419865.5)
+  (set! (-> self lightning-timer) (the-as uint 0))
+  (set! (-> self event-hook) (-> (method-of-object self idle) event))
+  (go (method-of-object self dormant))
+  (go (method-of-object self idle))
+  (none)
+  )
