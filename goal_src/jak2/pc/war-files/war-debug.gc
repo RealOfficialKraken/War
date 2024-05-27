@@ -55,7 +55,7 @@ onintent
     (!= arg1 1)
     (!= arg1 0)
     )
-    (format #t "~%~%ERROR - Set specified value~%0=Start battle~%1=Complete battle~%~%")
+    (format #t "~%~%ERROR - Must set specified value, either:~%~%0=Start battle~%1=Complete battle~%~%")
     )
 
 
