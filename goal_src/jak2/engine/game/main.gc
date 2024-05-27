@@ -872,9 +872,7 @@
     (runs-every-frame)
     (war-tracker!)
     (war-every-frame)
-    (when *debug-segment*
-      (dm-track-update)
-    )
+    (dm-track-update)
 
     ; ;; Run blerc to modify foreground models
     (with-profiler 'merc *profile-merc-color*

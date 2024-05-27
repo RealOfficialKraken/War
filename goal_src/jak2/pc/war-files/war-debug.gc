@@ -3,7 +3,7 @@
 
 ;; name: war-debug.gc
 
-(declare-file (debug))
+
 
 (define dm-in? #f)
 (define dm-select 0)
