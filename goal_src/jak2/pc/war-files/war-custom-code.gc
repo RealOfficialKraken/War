@@ -104,6 +104,9 @@
 (define target-in? #f)
 
 (defun-extern spawn-process-group-rhino (none))
+(defun-extern spawn-process-group-guard-3 (none))
+(defun-extern spawn-process-group-guard-6 (none))
+(defun-extern spawn-process-group-guard-12 (none))
 
 
 (defun-extern war-ctyport symbol)

@@ -7,6 +7,8 @@
 
 ;; DECOMP BEGINS
 
+(define *citizen-debug* #f)
+
 (defskelgroup skel-crimson-guard crimson-guard crimson-guard-lod0-jg -1
               ((crimson-guard-lod0-mg (meters 20)) (crimson-guard-lod2-mg (meters 999999)))
               :bounds (static-spherem 0 0 0 5)
