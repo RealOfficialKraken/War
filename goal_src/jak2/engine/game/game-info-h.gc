@@ -9,6 +9,10 @@
 (declare-type continue-point basic)
 (declare-type game-save basic)
 
+(define pause-menu-blocked? #f)
+(defun-extern camera-locked (none))
+(defun-extern camera-unlocked (none))
+
 (define matt-str (new 'global 'string 2048 (the-as string #f)))
 (define *pc-encoded-matt-str* (new 'global 'string 2048 (the-as string #f)))
 

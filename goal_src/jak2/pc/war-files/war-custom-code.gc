@@ -19,8 +19,25 @@
 
 ;spawn rift ring
 ;(process-spawn rift-ring-ingame (target-pos 0))
+(define camera-locked? #f)
 
+(defun camera-locked ()
+  (send-event *target* 'draw #f)
+  (set-setting-by-param *setting-control* 'mode-name 'cam-eye 0 0)
+  (persist-with-delay *setting-control* 'gun (seconds 0.5) 'gun #f 0.0 0)
+  (process-grab? *target* #f)
+  (set! camera-locked? #t)
+(none)
+)
 
+(defun camera-unlocked ()
+  (remove-setting-by-arg0 *setting-control* 'mode-name)
+  (set! pause-menu-blocked? #f)
+  (send-event *target* 'draw #t)
+  (process-release? *target*)
+  (set! camera-locked? #f)
+(none)
+)
 
 
 ;ported to retail

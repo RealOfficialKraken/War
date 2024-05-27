@@ -536,4 +536,5 @@
   "entity-spawner.o";; added
   "mod-custom-code.o";; added
   "war-custom-code.o";; added
+  "war-debug.o";; added
  ))
