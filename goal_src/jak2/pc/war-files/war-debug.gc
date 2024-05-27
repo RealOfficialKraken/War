@@ -28,7 +28,7 @@ stadium
 onintent
 |#
 
-(defun set-battle! ((arg0 string) (arg1 int)) ;set battles as completed in areas. example (set-battle! "ctyslumc" 1) sets to complete battle in ctyslumc
+(defun set-battle! ((arg0 string) (arg1 int)) ;set battles in specific areas of haven city. example (set-battle! "ctyslumc" 1) sets to complete battle in ctyslumc
     (when 
     (and
     (not (string= arg0 "ctyslumc"))
@@ -86,7 +86,7 @@ onintent
     (when (and (string= arg0 "ctyinda")(= arg1 1)(= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 0)) ;ctyinda off to on
         (+! (-> *game-info* continue-deaths) 10000)
     )
-    (when (and (string= arg0 "ctyina")(= arg1 0)(= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 1)) ;ctyinda on to off
+    (when (and (string= arg0 "ctyinda")(= arg1 0)(= (/ (mod (-> *game-info* continue-deaths) 100000) 10000) 1)) ;ctyinda on to off
         (-! (-> *game-info* continue-deaths) 10000)
     )
     (when (and (string= arg0 "ctyport")(= arg1 1)(= (/ (mod (-> *game-info* continue-deaths) 1000000) 100000) 0)) ;ctyport off to on

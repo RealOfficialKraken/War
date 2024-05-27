@@ -17,8 +17,14 @@
 ;set traffic to both guards and metalheads
 ;
 
-;spawn rift ring
-;(process-spawn rift-ring-ingame (target-pos 0))
+
+
+;Set a battle in the city to complete
+;(set-battle! "ctysluma" 1)
+
+
+
+
 (define camera-locked? #f)
 
 (defun camera-locked ()
@@ -228,7 +234,7 @@ killed vin-npc
 )
 )
   (let 
-    ((v1-0 (new 'static 'vector :x (meters 577.5107) :y (meters 1.0) :z (meters -851.8250))))
+    ((v1-0 (new 'static 'vector :x (meters 572.5329) :y (meters 1.0) :z (meters -842.5100))))
       (process-spawn torn-npc v1-0)
       (set! *torn-tracker* (process-spawn torn-npc v1-0))
         (format #t "
@@ -264,12 +270,15 @@ killed torn-npc
 )
 )
   (let 
-    ((v1-0 (new 'static 'vector :x (meters 561.9455) :y (meters 10.0) :z (meters -861.3982))))
-      (process-spawn vin-turbine v1-0)
+    ((v1-0 (new 'static 'vector :x (meters 571.3082) :y (meters 0.2) :z (meters -847.4244)))
+     (v1-1 (new 'static 'vector :x (meters 571.3082) :y (meters 0.2) :z (meters -850.4244)))
+    )
+      (vector-rotate-y! v1-0 v1-1 180.0)
+      #|(process-spawn vin-turbine v1-0)
       (set! *turbine-tracker* (process-spawn vin-turbine v1-0))
         (format #t "
 spawned process vin-turbine
-")
+")|#
     )
 )
 

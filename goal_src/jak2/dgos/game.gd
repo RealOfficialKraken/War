@@ -525,6 +525,8 @@
   "metalkor-extras.o"
   "vinroom-scenes.o"
   "vinroom-obs.o"
+  "transport.o"
+  "transport-ag.go"
   "nestb-scenes.o"
   "nestb-part.o";;      ^^                          ^^
   "rift-ring-in-game-ag.go";;rift-ring-in-game
