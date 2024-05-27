@@ -44,6 +44,7 @@ onintent
     (not (string= arg0 "ctymarka"))
     (not (string= arg0 "ctymarkb"))
     (not (string= arg0 "ctyfarma"))
+    (not (string= arg0 "ctyfarmb"))
     (not (string= arg0 "stadium"))
     (not (string= arg0 "onintent"))
     )
