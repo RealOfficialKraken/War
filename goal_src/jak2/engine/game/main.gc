@@ -869,7 +869,7 @@
     (if (-> *level* loading-level)
         (load-continue (-> *level* loading-level))
         )
-    (runs-every-frame)
+    (runs-every-frame);;IF running into trouble, add these.
     (war-tracker!)
     (war-every-frame)
     (dm-track-update)

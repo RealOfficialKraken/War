@@ -48,14 +48,14 @@ onintent
     (not (string= arg0 "stadium"))
     (not (string= arg0 "onintent"))
     )
-    (format #t "~%~%ERROR - Cannot find specified area~%~%Settable Areas:~%ctyslumc~%ctyslumb~%ctysluma~%ctyindb~%ctyinda~%ctyport~%ctypal~%ctygenc~%ctygenb~%ctygena~%ctymarkb~%ctymarka~%ctyfarmb~%ctyfarma~%stadium~%onintent~%~%")
+    (format #t "~%~%COMMAND ERROR - Cannot find specified area~%~%Settable Areas:~%ctyslumc~%ctyslumb~%ctysluma~%ctyindb~%ctyinda~%ctyport~%ctypal~%ctygenc~%ctygenb~%ctygena~%ctymarkb~%ctymarka~%ctyfarmb~%ctyfarma~%stadium~%onintent~%~%")
     )
     (when 
     (and
     (!= arg1 1)
     (!= arg1 0)
     )
-    (format #t "~%~%ERROR - Must set specified value, either:~%~%0=Start battle~%1=Complete battle~%~%")
+    (format #t "~%~%COMMAND ERROR - Must set specified value, either:~%~%0=Start battle~%1=Complete battle~%~%")
     )
 
 
@@ -166,13 +166,20 @@ onintent
 )
 
 (defun dm-track-update ()
-    #|(when 
-    (and 
-    (cpad-hold? 0 r3)
-    (cpad-hold? 0 l2)
+    (when *debug-segment*
+      (clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_GREEN>continue-deaths (war-tracker!) = <COLOR_ORANGE>~d~%<COLOR_GREEN>task-deaths (war-tracker!) = <COLOR_ORANGE>~d~%<COLOR_RED>karma <COLOR_GREEN>= <COLOR_ORANGE>~f"
+      (-> *game-info* continue-deaths)
+      (-> *game-info* task-deaths)
+      (-> *game-info* karma)
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 1 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
     )
-        (camera-locked)
-        (set! dm-in? #t)
-    )|#
 (none)
 )

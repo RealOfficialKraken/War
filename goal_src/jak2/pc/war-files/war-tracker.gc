@@ -273,22 +273,5 @@
 )
   (set! traffic-metalheads #f)
 )
-
-    (when *debug-segment*
-      (clear matt-str)
-      (clear *pc-encoded-matt-str*)
-      (format matt-str "<COLOR_GREEN>continue-deaths (war-tracker!) = <COLOR_ORANGE>~d~%<COLOR_GREEN>task-deaths (war-tracker!) = <COLOR_ORANGE>~d"
-      (-> *game-info* continue-deaths)
-      (-> *game-info* task-deaths)
-      )
-      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
-      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
-        ;; reset bucket settings prior to drawing - font won't do self for us, and
-        ;; draw-raw-image can sometimes mess them up. (intro sequence)
-        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
-        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 510 1 0.0 (font-color default) (font-flags right shadow kerning large))))
-          (set! (-> font-ctx scale) 0.325)
-          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
-    )
     (none)
 )
