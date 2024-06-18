@@ -1,0 +1,9 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: inventory-management.gc
+
+(defun access-menu! ()
+(camera-locked)
+(none)
+)

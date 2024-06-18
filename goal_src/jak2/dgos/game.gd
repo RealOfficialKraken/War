@@ -549,6 +549,7 @@
   "test-bike.o"
   "test-car.o"
   "citizen.o"
+  "citizen-enemy.o"
   "civilian.o"
   "crimson-guard-level.o"
   "guard-conversation.o"
@@ -573,4 +574,6 @@
   "mod-custom-code.o";; added
   "war-custom-code.o";; added
   "war-debug.o";; added
+  "xp-level.o"
+  "metalhead-gunner.o"
  ))

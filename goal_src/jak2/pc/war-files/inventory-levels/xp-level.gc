@@ -1,0 +1,25 @@
+;;-*-Lisp-*-
+(in-package goal)
+
+;; name: xp-level.gc
+
+(defun access-self-menu! ()
+(let ((vec (new-stack-vector0))
+      (off (new 'static 'vector :x (meters 3) :y (meters 8) :z (meters 3) :w 1.0)))
+        (vector+! vec (target-pos 0) off)
+        (send-event *camera* 'teleport-to-vector-start-string vec)
+        (set! (-> *target* cam-user-mode) 'fixed)
+        (set-setting-by-param *setting-control* 'mode-name 'cam-really-fixed 0 0)
+  )
+(process-grab? *target* #f)
+(persist-with-delay *setting-control* 'gun (seconds 0.5) 'gun #f 0.0 0)
+(set! in-mod-menu? #t)
+(none)
+)
+
+(defun close-self-menu! ()
+(process-release? *target*)
+(remove-setting-by-arg0 *setting-control* 'mode-name)
+(set! in-mod-menu? #f)
+(none)
+)

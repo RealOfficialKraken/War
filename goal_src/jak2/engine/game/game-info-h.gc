@@ -18,6 +18,13 @@
 
 (define in-dialogue? #f)
 
+(define print-noto 1)
+(define print-melee 1)
+(define print-scatter 1)
+(define print-blaster 1)
+(define print-vulcan 1)
+(define print-dark 1)
+
 (defenum pickup-type
   :bitfield #f
   :type int32

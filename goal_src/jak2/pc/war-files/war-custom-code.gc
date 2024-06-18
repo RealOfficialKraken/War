@@ -26,6 +26,9 @@
 
 
 (define camera-locked? #f)
+(define in-mod-menu? #f)
+(defun-extern access-self-menu! (none))
+(defun-extern close-self-menu! (none))
 
 (defun camera-locked ()
   (send-event *target* 'draw #f)
@@ -345,6 +348,57 @@ killed vin-turbine
 (set! in-dialogue? #f)
 )
 
+
+(when 
+(and
+*target*
+(not *scene-player*)
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(cpad-pressed? 0 r3)
+(= in-mod-menu? #f)
+)
+(access-self-menu!)
+)
+
+(when 
+(and
+*target*
+(not *scene-player*)
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(or (cpad-pressed? 0 triangle) (= (-> *target* fact health) 0.0))
+(= in-mod-menu? #t)
+)
+(close-self-menu!)
+)
+
+(when 
+(and
+*target*
+(not *scene-player*)
+(= (paused?) #f)
+(= (pause-allowed?) #t)
+(= in-mod-menu? #t)
+)
+(clear matt-str)
+      (clear *pc-encoded-matt-str*)
+      (format matt-str "<COLOR_ORANGE>Notoriety: ~d~%~%<COLOR_GREEN>Melee: ~d~%<COLOR_RED>ScatterGun: ~d~%<COLOR_YELLOW>Blaster: ~d~%<COLOR_BLUE>Vulcan: ~d~%<COLOR_PINK>Peacemaker: ~d"
+      print-noto
+      print-melee
+      print-scatter
+      print-blaster
+      print-vulcan
+      print-dark
+      )
+      (pc-encode-utf8-string matt-str *pc-encoded-matt-str*)
+      (with-dma-buffer-add-bucket ((buf (-> (current-frame) global-buf)) (bucket-id debug-no-zbuf1))
+        (dma-buffer-add-gs-set-flusha buf (alpha-1 (new 'static 'gs-alpha :b #x1 :d #x1)) (tex1-1 (new 'static 'gs-tex1 :mmag #x1 :mmin #x1)))
+        (let ((font-ctx (new 'stack 'font-context *font-default-matrix* 200 125 0.0 (font-color default) (font-flags right shadow kerning large))))
+          (set! (-> font-ctx scale) 0.325)
+          (draw-string-adv *pc-encoded-matt-str* buf font-ctx)))
+
+)
 
 
 (none) ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;END RUNS EVERY FRAME

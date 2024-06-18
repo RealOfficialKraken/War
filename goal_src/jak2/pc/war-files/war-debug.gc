@@ -165,6 +165,32 @@ onintent
     (none)
 )
 
+(defun jak-level! ((arg0 string) (arg1 int)) ;Set any of Jak's levels to whatever. Example: (jak-level! "notoriety" 3)
+(when 
+    (and
+    (not (string= arg0 "notoriety"))
+    (not (string= arg0 "scattergun"))
+    (not (string= arg0 "blaster"))
+    (not (string= arg0 "vulcan"))
+    (not (string= arg0 "peacemaker"))
+    (not (string= arg0 "melee"))
+    )
+    (format #t "~%~%COMMAND ERROR - Level counter not found~%~%these are the current settable levels:~%notoritey~%scattergun~%blaster~%vulcan~%peacemaker~%melee~%~%")
+    )
+    (when 
+    (or
+    (> arg1 30)
+    (<= arg1 0)
+    )
+    (format #t "~%~%COMMAND ERROR - Must be in between 1-30 for all levels.~%~%")
+    )
+)
+
+(defun jak-give! ((arg0 int) (arg1 int)) ;Give an item to jak with an item ID, then set item rarity
+
+
+)
+
 (defun dm-track-update ()
     (when *debug-segment*
       (clear matt-str)

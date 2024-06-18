@@ -698,3 +698,32 @@ This commonly includes things such as:
   (go (method-of-object self idle))
   (none)
   )
+
+
+  ;citizen inits
+;grenadier
+ #| (defmethod citizen-init! ((this metalhead-grenadier))
+  "Initialize [[citizen]] defaults."
+  (let ((t9-0 (method-of-type citizen-enemy citizen-init!)))
+    (t9-0 this)
+    )
+  (set! (-> this speed-walk) (-> this enemy-info walk-travel-speed))
+  (set! (-> this dist-walk-anim) (-> this enemy-info walk-travel-speed))
+  (set! (-> this dist-run-anim) (-> this enemy-info run-travel-speed))
+  (set! (-> this speed-run) (-> this enemy-info walk-travel-speed))
+  0
+  (none)
+  )|#
+;mantis
+  #|(defmethod citizen-init! ((this metalhead-mantis))
+  "Initialize [[citizen]] defaults."
+  (let ((t9-0 (method-of-type citizen-enemy citizen-init!)))
+    (t9-0 this)
+    )
+  (set! (-> this speed-walk) (-> this enemy-info walk-travel-speed))
+  (set! (-> this dist-walk-anim) (-> this enemy-info walk-travel-speed))
+  (set! (-> this dist-run-anim) (-> this enemy-info run-travel-speed))
+  (set! (-> this speed-run) (-> this enemy-info walk-travel-speed))
+  0
+  (none)
+  )|#

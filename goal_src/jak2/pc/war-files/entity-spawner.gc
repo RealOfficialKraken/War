@@ -6,7 +6,7 @@
 ;; dgos: ENGINE, GAME
 
 (define spawnslot 0) ;keeps track of enemy count in pool
-(define spawncap 10) ;sets the cap of random enemies allowed in the pool
+(define spawncap 20) ;sets the cap of random enemies allowed in the pool
 (define stored-vector (new-stack-vector0))
 
 (defun spawn-process-mantis ()
