@@ -215,9 +215,15 @@ spawned process vin-npc
 (when ;despawn vin-npc in port
 (and
 (ppointer->process *vin-tracker*)
+  (or 
+    (and 
+      (!= (-> (level-get-target-inside *level*) name) 'atollext)
+      (!= (-> (level-get-target-inside *level*) name) 'atoll)
+    )
   (and 
-    (!= (-> (level-get-target-inside *level*) name) 'atollext)
-    (!= (-> (level-get-target-inside *level*) name) 'atoll)
+    (not *target*)
+    (= (pause-allowed?) #f)
+  )
   )
 )
   (kill-by-name "vin-npc" *default-pool*)
@@ -252,9 +258,15 @@ spawned process torn-npc
 (when ;despawn torn-npc in port
 (and
 (ppointer->process *torn-tracker*)
+  (or 
+    (and 
+      (!= (-> (level-get-target-inside *level*) name) 'atollext)
+      (!= (-> (level-get-target-inside *level*) name) 'atoll)
+    )
   (and 
-    (!= (-> (level-get-target-inside *level*) name) 'atoll)
-    (!= (-> (level-get-target-inside *level*) name) 'atollext)
+    (not *target*)
+    (= (pause-allowed?) #f)
+  )
   )
 )
   (kill-by-name "torn-npc" *default-pool*)
