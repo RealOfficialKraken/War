@@ -8,7 +8,7 @@
 ;; DECOMP BEGINS
 (defun-extern runs-every-frame (none))
 (defun-extern war-tracker! (none))
-(defun-extern war-every-frame (none))
+(defun-extern war-update (none))
 (defun-extern dm-track-update (none))
 
 (defun set-letterbox-frames ((arg0 time-frame))
@@ -870,9 +870,9 @@
         (load-continue (-> *level* loading-level))
         )
     (runs-every-frame);;IF running into trouble, add these.
-    (war-tracker!)
-    (war-every-frame)
-    (dm-track-update)
+    (war-tracker!);;
+    (war-update);;
+    (dm-track-update);;
 
     ; ;; Run blerc to modify foreground models
     (with-profiler 'merc *profile-merc-color*

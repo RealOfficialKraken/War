@@ -115,7 +115,7 @@
 (defun-extern war-ctyport symbol)
 
 
-(defun war-every-frame () ;self explanitory
+(defun war-update () ;self explanitory
 
 (when ;define target-in? #t
 (and

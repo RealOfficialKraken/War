@@ -9,6 +9,7 @@
 (declare-type continue-point basic)
 (declare-type game-save basic)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;war mod;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define pause-menu-blocked? #f)
 (defun-extern camera-locked (none))
 (defun-extern camera-unlocked (none))
@@ -24,6 +25,8 @@
 (define print-blaster 1)
 (define print-vulcan 1)
 (define print-dark 1)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defenum pickup-type
   :bitfield #f
