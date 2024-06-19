@@ -456,7 +456,9 @@
         (set! (-> self sound-id) (new 'static 'sound-id))
         0
         )
-      (go-virtual open #f)
+        (when (= tutorial-completed? #t)
+          (go-virtual open #f)
+        )
       )
     )
   :code (behavior ((arg0 symbol))
@@ -818,7 +820,6 @@ This commonly includes things such as:
     (the-as pair 0)
     )
   (set! (-> this pre-open-frame) 35.0)
-  (set! (-> this lock-frame) 45.0)
   (set! (-> this open-frame) 45.0)
   (set! (-> this sound-pre-open) (static-sound-spec "airlock-slider"))
   (set! (-> this sound-pre-open-stop) (static-sound-spec "airlock-slide-e"))

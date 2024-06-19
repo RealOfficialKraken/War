@@ -18,6 +18,7 @@
 (define *pc-encoded-matt-str* (new 'global 'string 2048 (the-as string #f)))
 
 (define in-dialogue? #f)
+(define tutorial-completed? #f)
 
 (define print-noto 1)
 (define print-melee 1)
