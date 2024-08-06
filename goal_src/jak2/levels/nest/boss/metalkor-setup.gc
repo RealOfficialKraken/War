@@ -1619,3 +1619,35 @@ This commonly includes things such as:
   (metalkor-go-next-stage)
   (none)
   )
+
+  (defmethod metalkor-init-by-other metalkor ((vec vector))
+  (let ((kor (process-spawn manipy
+                          :init
+                          manipy-init
+                          vec
+                          #f
+                          (art-group-get-by-name *level* "skel-metalkor" (the (pointer uint32) #f))
+                          #f
+                          0)))
+  (if kor
+    (let ((torso (process-spawn manipy
+                                :init
+                                manipy-init
+                                vec
+                                #f
+                                (art-group-get-by-name *level* "skel-metalkor-lowtorso" (the (pointer uint32) #f))
+                                #f
+                                0
+                                :to
+                                (-> kor 0)))
+          (legs (process-spawn manipy
+                               :init
+                               manipy-init
+                               vec
+                               #f
+                               (art-group-get-by-name *level* "skel-metalkor-legs" (the (pointer uint32) #f))
+                               #f
+                               0
+                               :to
+                               (-> kor 0)))))))
+  )
